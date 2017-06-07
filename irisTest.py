@@ -12,21 +12,33 @@ irisDataSet = load_iris();
                        
 setosa = irisDataSet.target_names[0];
 versicolor = irisDataSet.target_names[1];
-virginica = irisDataSet.target_names[2];                                     
+virginica = irisDataSet.target_names[2]; 
 
+#Print a data set with its target label                            
+print (irisDataSet.data[0]);
+print (irisDataSet.target[0]);
+      
+# We need to remove 1 of each type of flower from the data set so that 
+# we can test the classifier with data it has never seen                                    
+removedVariablesFromIrisDataSet = [0, 50, 100];
+
+# Training data                                      
+# we are removing the removedVariablesFromIrisDataSet from the datset 
+# The training data will contain ALL the data EXCEPT the removedVariablesFromIrisDataSet
+training_target = np.delete(irisDataSet.target, removedVariablesFromIrisDataSet);                       
+training_data = np.delete(irisDataSet.data, removedVariablesFromIrisDataSet, axis=0);
+                      
+# Testing Data
+# This is the data we are going to test the classifier against as 'unseen' data
+testing_target = irisDataSet.target[removedVariablesFromIrisDataSet];
+testing_data = irisDataSet.data[removedVariablesFromIrisDataSet];                     
+                               
 #Creating Decision Tree Classifier
 #Feed decision tree the dataset and the related targets to each data set
 clf = tree.DecisionTreeClassifier();
-clf.fit(irisDataSet.data, irisDataSet.target);
+clf.fit(training_data, training_target);
 
-for i in range(len(irisDataSet.target)):
-    prediction = clf.predict(irisDataSet.data[i]);
-                            
-    if prediction == 0:
-        print ("Prediction: %s | Position: %d " % (setosa, i));
-    elif prediction == 1:
-        print ("Prediction: %s | Position: %d " % (versicolor, i));
-    else:
-        print ("Prediction: %s | Position: %d " % (virginica, i));
-              
-print (clf.predict(irisDataSet.data[145]));
+#if the testing_target is the same as the prediction - the machine has successfully predicted the correct flower       
+print (testing_target);
+print (clf.predict(testing_data));      
+
